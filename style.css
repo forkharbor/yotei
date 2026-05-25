@@ -1,0 +1,312 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: #0f1117;
+  color: #d1d9e6;
+  min-height: 100vh;
+}
+
+header {
+  background: #161b27;
+  color: #e0e6f0;
+  padding: 16px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  border-bottom: 1px solid #2a3045;
+}
+
+header h1 {
+  font-size: 1.5rem;
+}
+
+main {
+  max-width: 700px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: #1c2133;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  border: 1px solid #2a3045;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  color: #60a5fa;
+  border-bottom: 2px solid #2a3045;
+  padding-bottom: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #8a97b0;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"] {
+  padding: 8px 10px;
+  border: 1px solid #2a3045;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  width: 100%;
+  outline: none;
+  background: #252d3f;
+  color: #d1d9e6;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #60a5fa;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background: #2a3247;
+  color: #c0cce0;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #334060;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  padding: 10px 24px;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+/* タブ */
+.tab-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px;
+  background: #1a2035;
+  color: #8a97b0;
+  border: 1px solid #2a3045;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.tab.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+/* 予定リスト */
+#event-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.date-separator {
+  font-size: 0.8rem;
+  color: #60a5fa;
+  font-weight: bold;
+  padding: 12px 0 4px;
+  letter-spacing: 0.05em;
+}
+
+.date-separator:first-child {
+  padding-top: 0;
+}
+
+.event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: #1a2035;
+  border-radius: 6px;
+  border: 1px solid #2a3045;
+  gap: 8px;
+}
+
+.event-item.today {
+  border-color: #2563eb;
+  background: #1a2540;
+}
+
+.event-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.event-date {
+  font-size: 0.82rem;
+  color: #7dd3b0;
+  min-width: 36px;
+}
+
+.event-date.editable {
+  cursor: pointer;
+  border-bottom: 1px dashed #3a4a6a;
+  padding-bottom: 1px;
+}
+
+.event-date.editable:hover {
+  color: #34d399;
+  border-bottom-color: #34d399;
+}
+
+.date-input {
+  font-size: 0.82rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: 120px;
+  color: #7dd3b0;
+}
+
+.event-time {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #93c5fd;
+  min-width: 42px;
+}
+
+.event-title {
+  font-size: 0.95rem;
+  color: #e0e6f0;
+}
+
+.event-place {
+  font-size: 0.82rem;
+  color: #8a97b0;
+}
+
+.event-place.editable {
+  cursor: pointer;
+  border-bottom: 1px dashed #3a4a6a;
+  padding-bottom: 1px;
+}
+
+.event-place.editable:hover {
+  color: #93c5fd;
+  border-bottom-color: #60a5fa;
+}
+
+.event-memo {
+  font-size: 0.82rem;
+  color: #6b7fa0;
+  font-style: italic;
+}
+
+.event-memo.editable {
+  cursor: pointer;
+  border-bottom: 1px dashed #3a4a6a;
+  padding-bottom: 1px;
+}
+
+.event-memo.editable:hover {
+  color: #93c5fd;
+  border-bottom-color: #60a5fa;
+}
+
+.memo-placeholder {
+  color: #3a4a6a;
+  font-style: italic;
+}
+
+.memo-input {
+  font-size: 0.82rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: 160px;
+}
+
+.event-time.editable,
+.event-title.editable {
+  cursor: pointer;
+  border-bottom: 1px dashed #3a4a6a;
+  padding-bottom: 1px;
+}
+
+.event-time.editable:hover {
+  color: #60a5fa;
+  border-bottom-color: #60a5fa;
+}
+
+.event-title.editable:hover {
+  color: #e0e6f0;
+  border-bottom-color: #60a5fa;
+}
+
+.time-input {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: 90px;
+  color: #93c5fd;
+}
+
+.title-input {
+  font-size: 0.95rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: 180px;
+}
+
+.btn-delete {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  background: #3b1f1f;
+  color: #f87171;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-delete:hover {
+  background: #5a2020;
+}
+
+.empty-message {
+  text-align: center;
+  color: #4a5568;
+  padding: 20px;
+}
