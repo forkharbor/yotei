@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>予定管理</title>
-  <link rel="stylesheet" href="style.css?v=calendar-view">
+  <link rel="stylesheet" href="style.css?v=calendar-edit">
 </head>
 <body>
 
@@ -30,38 +30,30 @@
       <div id="calendar-grid" class="calendar-grid"></div>
       <div class="day-agenda">
         <h3 id="selected-day-title"></h3>
+        <div class="agenda-form">
+          <label>時刻
+            <input type="time" id="input-time">
+          </label>
+          <label>タイトル
+            <input type="text" id="input-title" placeholder="例：koyoi">
+          </label>
+          <label>場所
+            <input type="text" id="input-place" placeholder="例：東京駅">
+          </label>
+          <label>メモ
+            <input type="text" id="input-memo" placeholder="例：予約番号 12345">
+          </label>
+          <button id="btn-add-event" class="btn-primary" onclick="addEvent()" disabled>この日に追加</button>
+        </div>
       </div>
       <ul id="event-list"></ul>
       <p id="no-events" class="empty-message">予定がありません</p>
-    </section>
-
-    <section class="card">
-      <h2>予定を追加</h2>
-      <div class="form-grid">
-        <label>日付
-          <input type="date" id="input-date">
-        </label>
-        <label>時刻
-          <input type="time" id="input-time">
-        </label>
-        <label>タイトル
-          <input type="text" id="input-title" placeholder="例：koyoi">
-        </label>
-        <label>場所
-          <input type="text" id="input-place" placeholder="例：東京駅">
-        </label>
-        <label class="full-width">メモ
-          <input type="text" id="input-memo" placeholder="例：予約番号 12345">
-        </label>
-      </div>
-      <button id="btn-add-event" class="btn-primary" onclick="addEvent()" disabled>追加する</button>
-      <p id="sync-status" class="sync-status">データを同期しています...</p>
     </section>
 
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=calendar-view"></script>
+  <script src="app.js?v=calendar-edit"></script>
 </body>
 </html>

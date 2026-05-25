@@ -49,25 +49,6 @@ main {
   padding-bottom: 8px;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.form-grid label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.85rem;
-  color: #8a97b0;
-}
-
-.full-width {
-  grid-column: 1 / -1;
-}
-
 input[type="text"],
 input[type="date"],
 input[type="time"] {
@@ -115,20 +96,6 @@ button:disabled {
 
 .btn-primary:hover {
   background: #1d4ed8;
-}
-
-.sync-status {
-  margin-top: 12px;
-  font-size: 0.82rem;
-  color: #8a97b0;
-}
-
-.sync-status.ok {
-  color: #7dd3b0;
-}
-
-.sync-status.error {
-  color: #f87171;
 }
 
 .calendar-header h2 {
@@ -265,6 +232,32 @@ button:disabled {
 .day-agenda h3 {
   color: #60a5fa;
   font-size: 0.96rem;
+  margin-bottom: 12px;
+}
+
+.agenda-form {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  background: #161b27;
+}
+
+.agenda-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  font-size: 0.82rem;
+  color: #8a97b0;
+}
+
+.agenda-form label:nth-child(3),
+.agenda-form label:nth-child(4),
+.agenda-form .btn-primary {
+  grid-column: 1 / -1;
 }
 
 /* 選択日の予定 */
@@ -452,17 +445,6 @@ button:disabled {
     padding: 16px;
   }
 
-  .form-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px 10px;
-  }
-
-  .form-grid label {
-    min-width: 0;
-    overflow: hidden;
-  }
-
   input[type="text"],
   input[type="date"],
   input[type="time"] {
@@ -490,10 +472,6 @@ button:disabled {
     padding: 12px 20px;
   }
 
-  .sync-status {
-    text-align: center;
-  }
-
   .calendar-day {
     min-height: 57px;
     padding: 5px 3px;
@@ -505,6 +483,11 @@ button:disabled {
 
   .calendar-more {
     font-size: 0.59rem;
+  }
+
+  .agenda-form {
+    display: flex;
+    flex-direction: column;
   }
 
   .event-item {

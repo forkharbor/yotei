@@ -25,9 +25,9 @@ let eventsCache = loadCachedEvents();
 let syncReady = false;
 
 function setSyncStatus(text, state = '') {
-  const status = document.getElementById('sync-status');
-  status.textContent = text;
-  status.className = `sync-status ${state}`.trim();
+  if (state === 'error') {
+    console.error(text);
+  }
 }
 
 function cacheEvents(events) {
@@ -91,7 +91,7 @@ function createEventId() {
 function addEvent() {
   if (!requireSyncReady()) return;
 
-  const date = document.getElementById('input-date').value;
+  const date = selectedDate;
   const time = document.getElementById('input-time').value;
   const title = document.getElementById('input-title').value.trim();
   const place = document.getElementById('input-place').value.trim();
@@ -131,7 +131,6 @@ function goToday() {
   selectedDate = todayValue;
   calendarYear = new Date().getFullYear();
   calendarMonth = new Date().getMonth();
-  document.getElementById('input-date').value = selectedDate;
   renderEvents();
 }
 
@@ -146,7 +145,6 @@ function shiftMonth(offset) {
     calendarYear++;
   }
   selectedDate = `${calendarYear}-${pad(calendarMonth + 1)}-01`;
-  document.getElementById('input-date').value = selectedDate;
   renderEvents();
 }
 
@@ -155,7 +153,6 @@ function selectDate(dateValue) {
   const [year, month] = dateValue.split('-').map(Number);
   calendarYear = year;
   calendarMonth = month - 1;
-  document.getElementById('input-date').value = dateValue;
   renderEvents();
 }
 
@@ -316,6 +313,4 @@ sharedEventsRef.onSnapshot(async snapshot => {
   setSyncStatus('同期に失敗しました', 'error');
 });
 
-// 初期化
-document.getElementById('input-date').value = todayValue;
 renderEvents();
