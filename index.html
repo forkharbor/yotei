@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>予定管理</title>
-  <link rel="stylesheet" href="style.css?v=sky-theme-v2">
+  <link rel="stylesheet" href="style.css?v=agenda-bottom">
 </head>
 <body>
 
@@ -31,24 +31,24 @@
       <div id="calendar-grid" class="calendar-grid"></div>
       <div class="day-agenda">
         <h3 id="selected-day-title"></h3>
-        <div class="agenda-form">
-          <label>時刻
-            <input type="time" id="input-time">
-          </label>
-          <label>タイトル
-            <input type="text" id="input-title" placeholder="例：koyoi">
-          </label>
-          <label>場所
-            <input type="text" id="input-place" placeholder="例：東京駅">
-          </label>
-          <label>メモ
-            <input type="text" id="input-memo" placeholder="例：予約番号 12345">
-          </label>
-          <button id="btn-add-event" class="btn-primary" onclick="addEvent()" disabled>この日に追加</button>
-        </div>
       </div>
       <ul id="event-list"></ul>
       <p id="no-events" class="empty-message">予定がありません</p>
+      <div class="agenda-form">
+        <label>時刻
+          <input type="time" id="input-time">
+        </label>
+        <label>タイトル
+          <input type="text" id="input-title" placeholder="例：koyoi">
+        </label>
+        <label>場所
+          <input type="text" id="input-place" placeholder="例：東京駅">
+        </label>
+        <label>メモ
+          <input type="text" id="input-memo" placeholder="例：予約番号 12345">
+        </label>
+        <button id="btn-add-event" class="btn-primary" onclick="addEvent()" disabled>この日に追加</button>
+      </div>
     </section>
 
   </main>
