@@ -131,47 +131,148 @@ button:disabled {
   color: #f87171;
 }
 
-/* タブ */
-.tab-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+.calendar-header h2 {
+  margin-bottom: 12px;
 }
 
-.tab {
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.month-button {
+  width: 42px;
+  height: 40px;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.month-label {
   flex: 1;
-  padding: 8px;
-  background: #1a2035;
+  min-height: 40px;
+  background: transparent;
+  color: #e0e6f0;
+  font-size: 1.08rem;
+  font-weight: bold;
+}
+
+.month-label:hover {
+  background: #252d3f;
+}
+
+.weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekdays {
+  gap: 4px;
+  margin-bottom: 6px;
   color: #8a97b0;
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.weekdays .sun {
+  color: #f87171;
+}
+
+.weekdays .sat {
+  color: #60a5fa;
+}
+
+.calendar-grid {
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  min-width: 0;
+  min-height: 72px;
+  padding: 6px 5px;
   border: 1px solid #2a3045;
   border-radius: 6px;
-  font-size: 0.9rem;
+  background: #1a2035;
+  color: #c0cce0;
+  text-align: left;
 }
 
-.tab.active {
-  background: #2563eb;
-  color: white;
+.calendar-day:hover {
+  background: #252d3f;
+}
+
+.calendar-day.blank {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+.calendar-day.today {
   border-color: #2563eb;
 }
 
-/* 予定リスト */
+.calendar-day.selected {
+  background: #1a3259;
+  border-color: #60a5fa;
+}
+
+.calendar-day-number {
+  align-self: flex-end;
+  font-size: 0.78rem;
+  color: #8a97b0;
+}
+
+.calendar-day.sun .calendar-day-number {
+  color: #f87171;
+}
+
+.calendar-day.sat .calendar-day-number {
+  color: #60a5fa;
+}
+
+.calendar-event {
+  overflow: hidden;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: #2563eb;
+  color: white;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-more {
+  color: #93c5fd;
+  font-size: 0.65rem;
+  text-align: right;
+}
+
+.day-agenda {
+  border-top: 1px solid #2a3045;
+  padding-top: 14px;
+  margin-bottom: 10px;
+}
+
+.day-agenda h3 {
+  color: #60a5fa;
+  font-size: 0.96rem;
+}
+
+/* 選択日の予定 */
 #event-list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 4px;
-}
-
-.date-separator {
-  font-size: 0.8rem;
-  color: #60a5fa;
-  font-weight: bold;
-  padding: 12px 0 4px;
-  letter-spacing: 0.05em;
-}
-
-.date-separator:first-child {
-  padding-top: 0;
 }
 
 .event-item {
@@ -393,8 +494,17 @@ button:disabled {
     text-align: center;
   }
 
-  .tab {
-    padding: 10px 8px;
+  .calendar-day {
+    min-height: 57px;
+    padding: 5px 3px;
+  }
+
+  .calendar-event {
+    font-size: 0.61rem;
+  }
+
+  .calendar-more {
+    font-size: 0.59rem;
   }
 
   .event-item {

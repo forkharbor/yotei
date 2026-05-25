@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>予定管理</title>
-  <link rel="stylesheet" href="style.css?v=shared-db">
+  <link rel="stylesheet" href="style.css?v=calendar-view">
 </head>
 <body>
 
@@ -13,6 +13,27 @@
   </header>
 
   <main>
+
+    <section class="card calendar-card">
+      <div class="calendar-header">
+        <h2>カレンダー</h2>
+        <div class="calendar-nav">
+          <button type="button" class="month-button" onclick="shiftMonth(-1)" aria-label="前の月">‹</button>
+          <button type="button" id="calendar-month" class="month-label" onclick="goToday()" aria-label="今月に戻る"></button>
+          <button type="button" class="month-button" onclick="shiftMonth(1)" aria-label="次の月">›</button>
+        </div>
+      </div>
+      <div class="weekdays" aria-hidden="true">
+        <span class="sun">日</span><span>月</span><span>火</span><span>水</span>
+        <span>木</span><span>金</span><span class="sat">土</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+      <div class="day-agenda">
+        <h3 id="selected-day-title"></h3>
+      </div>
+      <ul id="event-list"></ul>
+      <p id="no-events" class="empty-message">予定がありません</p>
+    </section>
 
     <section class="card">
       <h2>予定を追加</h2>
@@ -37,20 +58,10 @@
       <p id="sync-status" class="sync-status">データを同期しています...</p>
     </section>
 
-    <section class="card">
-      <h2>予定一覧</h2>
-      <div class="tab-row">
-        <button id="tab-upcoming" class="tab active" onclick="switchTab('upcoming')">今後の予定</button>
-        <button id="tab-past" class="tab" onclick="switchTab('past')">過去の予定</button>
-      </div>
-      <ul id="event-list"></ul>
-      <p id="no-events" class="empty-message">予定がありません</p>
-    </section>
-
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=shared-db"></script>
+  <script src="app.js?v=calendar-view"></script>
 </body>
 </html>

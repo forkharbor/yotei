@@ -69,7 +69,18 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-let currentTab = 'upcoming';
+function pad(number) {
+  return String(number).padStart(2, '0');
+}
+
+function formatDateValue(date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+const todayValue = formatDateValue(new Date());
+let selectedDate = todayValue;
+let calendarYear = new Date().getFullYear();
+let calendarMonth = new Date().getMonth();
 
 function createEventId() {
   return window.crypto && crypto.randomUUID
@@ -105,7 +116,7 @@ function addEvent() {
   document.getElementById('input-place').value = '';
   document.getElementById('input-memo').value = '';
 
-  renderEvents();
+  selectDate(date);
 }
 
 function deleteEvent(id) {
@@ -116,76 +127,121 @@ function deleteEvent(id) {
   renderEvents();
 }
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.getElementById('tab-upcoming').classList.toggle('active', tab === 'upcoming');
-  document.getElementById('tab-past').classList.toggle('active', tab === 'past');
+function goToday() {
+  selectedDate = todayValue;
+  calendarYear = new Date().getFullYear();
+  calendarMonth = new Date().getMonth();
+  document.getElementById('input-date').value = selectedDate;
   renderEvents();
 }
 
+function shiftMonth(offset) {
+  calendarMonth += offset;
+  if (calendarMonth < 0) {
+    calendarMonth = 11;
+    calendarYear--;
+  }
+  if (calendarMonth > 11) {
+    calendarMonth = 0;
+    calendarYear++;
+  }
+  selectedDate = `${calendarYear}-${pad(calendarMonth + 1)}-01`;
+  document.getElementById('input-date').value = selectedDate;
+  renderEvents();
+}
+
+function selectDate(dateValue) {
+  selectedDate = dateValue;
+  const [year, month] = dateValue.split('-').map(Number);
+  calendarYear = year;
+  calendarMonth = month - 1;
+  document.getElementById('input-date').value = dateValue;
+  renderEvents();
+}
+
+function renderCalendar(events) {
+  const calendar = document.getElementById('calendar-grid');
+  document.getElementById('calendar-month').textContent = `${calendarYear}年 ${calendarMonth + 1}月`;
+  calendar.innerHTML = '';
+
+  const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+  for (let index = 0; index < firstDay; index++) {
+    const blank = document.createElement('span');
+    blank.className = 'calendar-day blank';
+    calendar.appendChild(blank);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateValue = `${calendarYear}-${pad(calendarMonth + 1)}-${pad(day)}`;
+    const dayEvents = events
+      .filter(event => event.date === dateValue)
+      .sort((a, b) => a.time.localeCompare(b.time));
+    const dayOfWeek = new Date(calendarYear, calendarMonth, day).getDay();
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = 'calendar-day'
+      + (dateValue === todayValue ? ' today' : '')
+      + (dateValue === selectedDate ? ' selected' : '')
+      + (dayOfWeek === 0 ? ' sun' : '')
+      + (dayOfWeek === 6 ? ' sat' : '');
+    cell.onclick = () => selectDate(dateValue);
+
+    const number = document.createElement('span');
+    number.className = 'calendar-day-number';
+    number.textContent = day;
+    cell.appendChild(number);
+
+    dayEvents.slice(0, 2).forEach(event => {
+      const badge = document.createElement('span');
+      badge.className = 'calendar-event';
+      badge.textContent = `${event.time} ${event.title}`;
+      cell.appendChild(badge);
+    });
+
+    if (dayEvents.length > 2) {
+      const more = document.createElement('span');
+      more.className = 'calendar-more';
+      more.textContent = `+${dayEvents.length - 2}`;
+      cell.appendChild(more);
+    }
+
+    calendar.appendChild(cell);
+  }
+}
+
 function renderEvents() {
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-  const nowTimeStr = now.toTimeString().slice(0, 5);
-
   const events = loadEvents();
+  renderCalendar(events);
 
-  const filtered = events.filter(e => {
-    const isPast = e.date < todayStr || (e.date === todayStr && e.time < nowTimeStr);
-    return currentTab === 'past' ? isPast : !isPast;
-  });
-
-  filtered.sort((a, b) => {
-    if (a.date !== b.date) return a.date.localeCompare(b.date);
-    return a.time.localeCompare(b.time);
-  });
-
+  const selectedEvents = events
+    .filter(event => event.date === selectedDate)
+    .sort((a, b) => a.time.localeCompare(b.time));
   const list = document.getElementById('event-list');
   const noEvents = document.getElementById('no-events');
+  const [year, month, day] = selectedDate.split('-').map(Number);
+  const weekday = ['日', '月', '火', '水', '木', '金', '土'][new Date(year, month - 1, day).getDay()];
+  document.getElementById('selected-day-title').textContent = `${month}月${day}日（${weekday}）の予定`;
   list.innerHTML = '';
 
-  if (filtered.length === 0) {
+  if (selectedEvents.length === 0) {
     noEvents.style.display = 'block';
     return;
   }
 
   noEvents.style.display = 'none';
 
-  let lastDate = null;
-
-  filtered.forEach(e => {
-    const [y, m, d] = e.date.split('-');
-    const dateLabel = `${parseInt(m)}月${parseInt(d)}日`;
-
-    if (e.date !== lastDate) {
-      const separator = document.createElement('li');
-      separator.className = 'date-separator';
-      separator.textContent = dateLabel;
-      list.appendChild(separator);
-      lastDate = e.date;
-    }
-
-    const isToday = e.date === todayStr;
-
+  selectedEvents.forEach(e => {
     const li = document.createElement('li');
-    li.className = 'event-item' + (isToday ? ' today' : '');
+    li.className = 'event-item' + (e.date === todayValue ? ' today' : '');
     li.innerHTML = `
       <div class="event-main">
-        ${currentTab === 'upcoming'
-          ? `<span class="event-date editable" onclick="startEdit('${e.id}', 'date', this)">${parseInt(m)}/${parseInt(d)}</span>
-             <span class="event-time editable" onclick="startEdit('${e.id}', 'time', this)">${e.time}</span>
-             <span class="event-title editable" onclick="startEdit('${e.id}', 'title', this)">${escapeHtml(e.title)}</span>`
-          : `<span class="event-time">${e.time}</span>
-             <span class="event-title">${escapeHtml(e.title)}</span>`
-        }
-        ${currentTab === 'upcoming'
-          ? `<span class="event-place editable" onclick="startEdit('${e.id}', 'place', this)">${e.place ? '📍 ' + escapeHtml(e.place) : '<span class="memo-placeholder">場所を追加...</span>'}</span>`
-          : e.place ? `<span class="event-place">📍 ${escapeHtml(e.place)}</span>` : ''
-        }
-        ${currentTab === 'upcoming'
-          ? `<span class="event-memo editable" onclick="startEdit('${e.id}', 'memo', this)">${e.memo ? escapeHtml(e.memo) : '<span class="memo-placeholder">メモを追加...</span>'}</span>`
-          : e.memo ? `<span class="event-memo">${escapeHtml(e.memo)}</span>` : ''
-        }
+        <span class="event-date editable" onclick="startEdit('${e.id}', 'date', this)">${month}/${day}</span>
+        <span class="event-time editable" onclick="startEdit('${e.id}', 'time', this)">${e.time}</span>
+        <span class="event-title editable" onclick="startEdit('${e.id}', 'title', this)">${escapeHtml(e.title)}</span>
+        <span class="event-place editable" onclick="startEdit('${e.id}', 'place', this)">${e.place ? escapeHtml(e.place) : '<span class="memo-placeholder">場所を追加...</span>'}</span>
+        <span class="event-memo editable" onclick="startEdit('${e.id}', 'memo', this)">${e.memo ? escapeHtml(e.memo) : '<span class="memo-placeholder">メモを追加...</span>'}</span>
       </div>
       <button class="btn-delete" onclick="deleteEvent('${e.id}')">削除</button>
     `;
@@ -222,7 +278,11 @@ function startEdit(id, field, el) {
       ev[field] = val;
       saveEvents(events);
     }
-    renderEvents();
+    if (field === 'date') {
+      selectDate(val);
+    } else {
+      renderEvents();
+    }
   }
 
   input.addEventListener('keydown', e => {
@@ -257,5 +317,5 @@ sharedEventsRef.onSnapshot(async snapshot => {
 });
 
 // 初期化
-document.getElementById('input-date').value = new Date().toISOString().slice(0, 10);
+document.getElementById('input-date').value = todayValue;
 renderEvents();
