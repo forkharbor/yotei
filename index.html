@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>予定管理</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>予定管理</h1>
+  </header>
+
+  <main>
+
+    <section class="card">
+      <h2>予定を追加</h2>
+      <div class="form-grid">
+        <label>日付
+          <input type="date" id="input-date">
+        </label>
+        <label>時刻
+          <input type="time" id="input-time">
+        </label>
+        <label>タイトル
+          <input type="text" id="input-title" placeholder="例：バチェラーデート">
+        </label>
+        <label>場所
+          <input type="text" id="input-place" placeholder="例：東京駅">
+        </label>
+        <label class="full-width">メモ
+          <input type="text" id="input-memo" placeholder="例：予約番号 12345">
+        </label>
+      </div>
+      <button class="btn-primary" onclick="addEvent()">追加する</button>
+    </section>
+
+    <section class="card">
+      <h2>予定一覧</h2>
+      <div class="tab-row">
+        <button id="tab-upcoming" class="tab active" onclick="switchTab('upcoming')">今後の予定</button>
+        <button id="tab-past" class="tab" onclick="switchTab('past')">過去の予定</button>
+      </div>
+      <ul id="event-list"></ul>
+      <p id="no-events" class="empty-message">予定がありません</p>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
