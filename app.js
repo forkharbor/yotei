@@ -1,9 +1,64 @@
-function loadEvents() {
-  return JSON.parse(localStorage.getItem('yotei_events') || '[]');
+const LOCAL_STORAGE_KEY = 'yotei_events';
+const firebaseConfig = {
+  apiKey: 'AIzaSyCfvqQWLB8NJqmaH0k2G0wPcbJJjz2Vu4A',
+  authDomain: 'kaimemo-58bad.firebaseapp.com',
+  projectId: 'kaimemo-58bad',
+  storageBucket: 'kaimemo-58bad.firebasestorage.app',
+  messagingSenderId: '308069117698',
+  appId: '1:308069117698:web:c61a57853abb7e8ffb1c1b'
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const sharedEventsRef = db.collection('data').doc('yotei');
+
+function loadCachedEvents() {
+  try {
+    const events = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    return Array.isArray(events) ? events : [];
+  } catch (error) {
+    return [];
+  }
 }
 
-function saveEvents(events) {
-  localStorage.setItem('yotei_events', JSON.stringify(events));
+let eventsCache = loadCachedEvents();
+let syncReady = false;
+
+function setSyncStatus(text, state = '') {
+  const status = document.getElementById('sync-status');
+  status.textContent = text;
+  status.className = `sync-status ${state}`.trim();
+}
+
+function cacheEvents(events) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
+}
+
+function loadEvents() {
+  return eventsCache;
+}
+
+function setSyncReady() {
+  syncReady = true;
+  document.getElementById('btn-add-event').disabled = false;
+}
+
+function requireSyncReady() {
+  if (syncReady) return true;
+  alert('データの同期が完了するまでお待ちください');
+  return false;
+}
+
+async function saveEvents(events) {
+  eventsCache = events;
+  cacheEvents(events);
+  setSyncStatus('データを保存しています...');
+  try {
+    await sharedEventsRef.set({ events });
+    setSyncStatus('共有データに同期済み', 'ok');
+  } catch (error) {
+    setSyncStatus('同期に失敗しました', 'error');
+  }
 }
 
 function escapeHtml(str) {
@@ -16,7 +71,15 @@ function escapeHtml(str) {
 
 let currentTab = 'upcoming';
 
+function createEventId() {
+  return window.crypto && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 function addEvent() {
+  if (!requireSyncReady()) return;
+
   const date = document.getElementById('input-date').value;
   const time = document.getElementById('input-time').value;
   const title = document.getElementById('input-title').value.trim();
@@ -29,7 +92,7 @@ function addEvent() {
 
   const events = loadEvents();
   events.push({
-    id: Date.now().toString(),
+    id: createEventId(),
     date,
     time,
     title,
@@ -46,6 +109,7 @@ function addEvent() {
 }
 
 function deleteEvent(id) {
+  if (!requireSyncReady()) return;
   if (!confirm('この予定を削除しますか？')) return;
   const events = loadEvents().filter(e => e.id !== id);
   saveEvents(events);
@@ -130,6 +194,8 @@ function renderEvents() {
 }
 
 function startEdit(id, field, el) {
+  if (!requireSyncReady()) return;
+
   const events = loadEvents();
   const event = events.find(e => e.id === id);
   if (!event) return;
@@ -165,6 +231,30 @@ function startEdit(id, field, el) {
   });
   input.addEventListener('blur', save);
 }
+
+sharedEventsRef.onSnapshot(async snapshot => {
+  if (!syncReady && !snapshot.exists && eventsCache.length > 0) {
+    setSyncReady();
+    setSyncStatus('端末内の予定を共有しています...');
+    try {
+      await sharedEventsRef.set({ events: eventsCache });
+    } catch (error) {
+      setSyncStatus('同期に失敗しました', 'error');
+    }
+    renderEvents();
+    return;
+  }
+
+  setSyncReady();
+  eventsCache = snapshot.exists && Array.isArray(snapshot.data().events)
+    ? snapshot.data().events
+    : [];
+  cacheEvents(eventsCache);
+  setSyncStatus('共有データに同期済み', 'ok');
+  renderEvents();
+}, () => {
+  setSyncStatus('同期に失敗しました', 'error');
+});
 
 // 初期化
 document.getElementById('input-date').value = new Date().toISOString().slice(0, 10);
