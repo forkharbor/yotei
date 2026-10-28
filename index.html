@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>予定管理</title>
-  <link rel="stylesheet" href="style.css?v=agenda-bottom">
+  <link rel="stylesheet" href="style.css?v=holidays-20261028">
 </head>
 <body>
 
@@ -28,6 +28,7 @@
         <span class="sun">日</span><span>月</span><span>火</span><span>水</span>
         <span>木</span><span>金</span><span class="sat">土</span>
       </div>
+      <p id="holiday-status" class="holiday-status" role="status" hidden></p>
       <div id="calendar-grid" class="calendar-grid"></div>
       <div class="day-agenda">
         <h3 id="selected-day-title"></h3>
@@ -49,12 +50,14 @@
         </label>
         <button id="btn-add-event" class="btn-primary" onclick="addEvent()" disabled>この日に追加</button>
       </div>
+      <p class="holiday-source">祝日・休日は赤字で表示 · 出典：<a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noopener noreferrer">内閣府</a>（1955〜2027年）</p>
     </section>
 
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=calendar-edit"></script>
+  <script src="holidays.js?v=20261028"></script>
+  <script src="app.js?v=holidays-20261028"></script>
 </body>
 </html>

@@ -159,6 +159,9 @@ function selectDate(dateValue) {
 function renderCalendar(events) {
   const calendar = document.getElementById('calendar-grid');
   document.getElementById('calendar-month').textContent = `${calendarYear}年 ${calendarMonth + 1}月`;
+  const holidayStatus = document.getElementById('holiday-status');
+  holidayStatus.hidden = calendarYear >= HOLIDAY_START_YEAR && calendarYear <= HOLIDAY_END_YEAR;
+  holidayStatus.textContent = holidayStatus.hidden ? '' : `${calendarYear}年の祝日データは未掲載です`;
   calendar.innerHTML = '';
 
   const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
@@ -172,6 +175,7 @@ function renderCalendar(events) {
 
   for (let day = 1; day <= daysInMonth; day++) {
     const dateValue = `${calendarYear}-${pad(calendarMonth + 1)}-${pad(day)}`;
+    const holidayName = JAPAN_HOLIDAYS[dateValue] || '';
     const dayEvents = events
       .filter(event => event.date === dateValue)
       .sort((a, b) => a.time.localeCompare(b.time));
@@ -182,13 +186,23 @@ function renderCalendar(events) {
       + (dateValue === todayValue ? ' today' : '')
       + (dateValue === selectedDate ? ' selected' : '')
       + (dayOfWeek === 0 ? ' sun' : '')
-      + (dayOfWeek === 6 ? ' sat' : '');
+      + (dayOfWeek === 6 ? ' sat' : '')
+      + (holidayName ? ' holiday' : '');
+    cell.setAttribute('aria-label', `${calendarYear}年${calendarMonth + 1}月${day}日${holidayName ? ` ${holidayName}` : ''} 予定${dayEvents.length}件`);
     cell.onclick = () => selectDate(dateValue);
 
     const number = document.createElement('span');
     number.className = 'calendar-day-number';
     number.textContent = day;
     cell.appendChild(number);
+
+    if (holidayName) {
+      const holiday = document.createElement('span');
+      holiday.className = 'calendar-holiday';
+      holiday.textContent = holidayName;
+      cell.title = holidayName;
+      cell.appendChild(holiday);
+    }
 
     dayEvents.slice(0, 2).forEach(event => {
       const badge = document.createElement('span');
@@ -219,7 +233,10 @@ function renderEvents() {
   const noEvents = document.getElementById('no-events');
   const [year, month, day] = selectedDate.split('-').map(Number);
   const weekday = ['日', '月', '火', '水', '木', '金', '土'][new Date(year, month - 1, day).getDay()];
-  document.getElementById('selected-day-title').textContent = `${month}月${day}日（${weekday}）の予定`;
+  const holidayName = JAPAN_HOLIDAYS[selectedDate] || '';
+  const dayTitle = document.getElementById('selected-day-title');
+  dayTitle.textContent = `${month}月${day}日（${weekday}）の予定${holidayName ? ` ｜ ${holidayName}` : ''}`;
+  dayTitle.classList.toggle('is-holiday', Boolean(holidayName));
   list.innerHTML = '';
 
   if (selectedEvents.length === 0) {

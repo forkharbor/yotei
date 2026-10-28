@@ -685,3 +685,47 @@ button:hover {
 .empty-message {
   color: #6e90a5;
 }
+
+/* 祝日・休日：土曜日と重なっても赤字を優先 */
+.calendar-day.holiday {
+  background: #fff3f5;
+}
+
+.calendar-day.holiday:hover {
+  background: #ffe8ed;
+}
+
+.calendar-day.holiday.selected {
+  background: #ffe1e9;
+  border-color: #cf4562;
+}
+
+.calendar-day.holiday .calendar-day-number,
+.calendar-holiday,
+#selected-day-title.is-holiday {
+  color: #b93652;
+}
+
+.calendar-holiday {
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.holiday-status {
+  margin-bottom: 10px;
+  color: #936222;
+  font-size: 0.76rem;
+}
+
+.holiday-source {
+  margin-top: 12px;
+  color: #6e90a5;
+  font-size: 0.68rem;
+  line-height: 1.6;
+}
+
+.holiday-source a {
+  color: #2385ba;
+}
